@@ -17,27 +17,29 @@ export const App = () => {
   const [loadMore, setLoadMore] = useState(false);
 
   useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        setIsLoading(true);
-        const data = await fetchPixabayImages(query, page);
+    if (query) {
+      const fetchImages = async () => {
+        try {
+          setIsLoading(true);
+          const data = await fetchPixabayImages(query, page);
 
-        const { hits, totalHits } = data;
-        setPictures(prevState => [...prevState, ...hits]);
-        setIsLoading(false);
-        setShowModal(false);
-        setLoadMore(hits.length > 0);
+          const { hits, totalHits } = data;
+          setPictures(prevState => [...prevState, ...hits]);
+          setIsLoading(false);
+          setShowModal(false);
+          setLoadMore(hits.length > 0);
 
-        const imagesLoaded = page * 12;
-        if (imagesLoaded >= totalHits) {
-          setLoadMore(false);
+          const imagesLoaded = page * 12;
+          if (imagesLoaded >= totalHits) {
+            setLoadMore(false);
+          }
+        } catch (error) {
+          setIsLoading(false);
+          console.error('Failed to fetch images:', error);
         }
-      } catch (error) {
-        setIsLoading(false);
-        console.error('Failed to fetch images:', error);
-      }
-    };
-    fetchImages();
+      };
+      fetchImages();
+    }
   }, [page, query]);
 
   const handleSearch = query => {
